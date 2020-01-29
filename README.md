@@ -16,6 +16,7 @@ Run this command in console
 ```
 pip install requests
 pip install pyqt5
+pip install discord_webhook
 ```
 ## Starting
 
