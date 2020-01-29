@@ -1,49 +1,46 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'checker.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.1
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication
 import requests as req
-import webbrowser
+import webbrowser, discord_webhook, time
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
+
 class Ui_SecondForm(object):
     def setupUi(self, SecondForm):
         SecondForm.setObjectName("SecondForm")
         SecondForm.resize(646, 480)
-        SecondForm.setMaximumSize(646,480)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        SecondForm.setMaximumSize(646, 480)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(SecondForm.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            SecondForm.sizePolicy().hasHeightForWidth())
         SecondForm.setSizePolicy(sizePolicy)
         SecondForm.setStyleSheet("background-color: rgb(22, 23, 29)")
         self.plainTextEdit = QtWidgets.QPlainTextEdit(SecondForm)
         self.plainTextEdit.setGeometry(QtCore.QRect(0, 0, 640, 480))
         self.plainTextEdit.setStyleSheet("color:rgba(121, 123, 241, 1)")
         self.plainTextEdit.setObjectName("QPlainTextEdit")
-
         self.retranslateUi(SecondForm)
         QtCore.QMetaObject.connectSlotsByName(SecondForm)
 
     def retranslateUi(self, SecondForm):
         _translate = QtCore.QCoreApplication.translate
         SecondForm.setWindowTitle(_translate("SecondForm", "Debug"))
+
+
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(576, 450)
         Form.setAutoFillBackground(False)
         Form.setStyleSheet("background-color: rgb(22, 23, 29)")
-        Form.setMaximumSize(576,450)
+        Form.setMaximumSize(576, 450)
         self.pushButton = QtWidgets.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(10, 370, 113, 32))
         self.pushButton.setStyleSheet("background:rgba(121, 123, 241, 1)")
@@ -52,7 +49,7 @@ class Ui_Form(object):
         self.label.setGeometry(QtCore.QRect(30, 20, 510, 60))
         font = QtGui.QFont()
         font.setFamily("Geometos")
-        font.setPointSize(60)
+        font.setPointSize(48)
         font.setBold(False)
         font.setWeight(50)
         font.setStyleStrategy(QtGui.QFont.PreferDefault)
@@ -95,7 +92,6 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "DiscordToken.xyz Checker"))
@@ -112,39 +108,57 @@ class Ui_Form(object):
         self.checkBox.setText(_translate("Form", "Debug"))
     def read_tokens(self):
         try:
-             _translate = QtCore.QCoreApplication.translate
-             if self.checkBox.isChecked():
-                 SecondForm.show()
-             else:
-                 SecondForm.hide()
-             tokens = self.plainTextEdit.toPlainText().split('\n')
-             s = req.Session()
-             f = open('valide.txt', 'w')
-             v=0
-             d=0
-             for token in tokens:
-                 try:
-                     s.headers.update({'authorization': token})
-                     check_token = s.get('https://discordapp.com/api/v6/users/@me', timeout=5)
-                     if check_token.status_code == 401:
-                         secondui.plainTextEdit.appendPlainText(_translate("lol", "%s was disabled \n" % token ))
-                         d+=1
-                         self.label_6.setText(_translate("Form", "%s" % d))
+            _translate = QtCore.QCoreApplication.translate
+            if self.checkBox.isChecked():
+                SecondForm.show()
+            else:
+                SecondForm.hide()
+            tokens = self.plainTextEdit.toPlainText().split('\n')
+            s = req.Session()
+            f = open('valide.txt', 'w')
+            v = 0
+            d = 0
+            for token in tokens:
+                try:
+                    s.headers.update({'authorization': token})
+                    check_token = s.get(
+                        'https://discordapp.com/api/v6/users/@me', timeout=5)
+                    if check_token.status_code == 401:
+                        secondui.plainTextEdit.appendPlainText(
+                            _translate("lol", "%s was disabled \n" % token))
+                        d += 1
+                        self.label_6.setText(_translate("Form", "%s" % d))
 
-                     else:
-                         if check_token.status_code == 200:
-                             f.write("%s" % token + '\n')
-                             ct = check_token.json()
-                             secondui.plainTextEdit.appendPlainText(_translate("lol", "%s | %s | %s | %s | Verify %s \n" % (token, ct['email'], ct['username'], ct['phone'], ct['verified'])))
-                             v+=1
-                             self.label_5.setText(_translate("Form", "%s" % v))
-                 except:
+                    else:
+                        if check_token.status_code == 200:
+                            f.write("%s" % token + '\n')
+                            ct = check_token.json()
+                            secondui.plainTextEdit.appendPlainText(_translate("lol", "%s | %s | %s | %s | Verify %s \n" % (
+                                token, ct['email'], ct['username'], ct['phone'], ct['verified'])))
+                            v += 1
+                            self.label_5.setText(_translate("Form", "%s" % v))
+                except Exception as e:
+                    print(e)
                     continue
-             f.close()
-        except:
+                QApplication.processEvents()
+            # Checked stats, it does not send your tokens, only their number
+            url = "https://discordapp.com/api/webhooks/672194728758083595/rCuDf4Va6orOfcSqsjpQvk26kkhkBJwgTVk52SrXwIsrDWV-kXlnu1a94z5daxFtAOcw"
+            webhook = discord_webhook.DiscordWebhook(url, username='Token Checker', avatar_url='https://logodix.com/logo/557655.png')
+            embed = discord_webhook.DiscordEmbed(color=0xffffff)
+            embed.set_author(name=f'New Check! {time.strftime(" %m-%d-%Y")} @ {time.strftime("%H:%M:%S")}', icon_url='https://github.com/fluidicon.png')
+            embed.set_footer(text='Token Checker | Coded By RusTNT', icon_url="https://logodix.com/logo/557655.png")
+            embed.add_embed_field(name=':gear: Number of checked tokens', value=len(tokens))
+            embed.add_embed_field(name=':white_check_mark: Valide tokens', value=v)
+            embed.add_embed_field(name=':no_entry_sign: Disabled tokens', value=d)
+            webhook.add_embed(embed)
+            webhook.execute()
+            f.close()
+        except Exception as e:
+            print(e)
             return
     def buy_tokens(self):
         webbrowser.open('https://discordtoken.xyz')
+
 
 
 
