@@ -37,8 +37,4 @@ After tokens are be checked you see valide.txt file
 
 ## Contact
 
-Token Shop: https://discordtoken.xyz/
-
-Telegram Support: https://t.me/discordtokengroup
-
-Telegram News: https://t.me/discordtokennews
+[Telegram: @rustnt](tg://resolve?domain=RUSTNT)
